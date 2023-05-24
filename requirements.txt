@@ -3,5 +3,5 @@ joblib==1.2.0
 pydantic==1.10.7
 PyMySQL==1.0.3
 python-dotenv==1.0.0
-setuptools==67.8.0
+setuptools==56.0.0
 uvicorn==0.22.0
