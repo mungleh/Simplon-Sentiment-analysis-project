@@ -3,9 +3,9 @@ from pydantic import BaseModel
 
 #struture table inputs
 class bddinputs(BaseModel):
-    id: Optional[int]
-    QUARTER : Optional[int]
-    MONTH : Optional[int]
+    title: Optional[str]
+    feature : Optional[str]
+    prediction : Optional[str]
 
 #structure table test
 class bddtest(BaseModel):
