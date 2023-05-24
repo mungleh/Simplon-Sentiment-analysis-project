@@ -11,7 +11,7 @@ memoized-property
 mlflow
 gcsfs
 termcolor
-uvicorn
+uvicorn==0.22.0
 fastapi
 pydantic
 anyio==3.6.2
