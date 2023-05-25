@@ -59,16 +59,9 @@ async def get_items() -> List[bddtest]:
     # Retourner les résultats de l'API
     return items
 
-# 3. Expose the prediction functionality, make a prediction from the passed
-#    JSON data and return the predicted flower species with the confidence
-
-#-----------------------------------------------------------------------API app---------------------------------------------------
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
+#-----------------------------------------------------------------------API app--------------------------------------------------------------
 @app.post('/test_predict')
+
 def predict_sentiment(review: ReviewSentiment):
     data = review.dict()
     prediction, probability = model.predict_sentiment(
@@ -95,9 +88,9 @@ def predict_sentiment(review: ReviewSentiment):
 async def create_item(item: bddinputs):
     # Effectuer des opérations sur la base de données
     with conn.cursor() as cursor:
-        query = "INSERT INTO inputs (title, feature, prediction) " \
+        query = "INSERT INTO inputs (input, prediction, probability) " \
                  "VALUES (%s, %s, %s)"
-        values = (item.title,item.feature, item.prediction)
+        values = (item.input,item.prediction, item.probability)
         cursor.execute(query, values)
         conn.commit()
 
