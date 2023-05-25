@@ -59,9 +59,16 @@ async def get_items() -> List[bddtest]:
     # Retourner les résultats de l'API
     return items
 
-#-----------------------------------------------------------------------API app--------------------------------------------------------------
-@app.post('/test_predict')
+# 3. Expose the prediction functionality, make a prediction from the passed
+#    JSON data and return the predicted flower species with the confidence
 
+#-----------------------------------------------------------------------API app---------------------------------------------------
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+
+@app.post('/test_predict')
 def predict_sentiment(review: ReviewSentiment):
     data = review.dict()
     prediction, probability = model.predict_sentiment(
