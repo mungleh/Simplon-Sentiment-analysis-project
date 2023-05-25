@@ -38,22 +38,22 @@ conn = pymysql.connect(
 
 #affichage pr test
 @app.get("/")
-async def get_items() -> List[bddtest]:
+async def get_items() -> List[bddinputs]:
     # Effectuer des opérations sur la base de données
     with conn.cursor() as cursor:
-        cursor.execute("SELECT * FROM test LIMIT 5")
+        cursor.execute("SELECT * FROM inputs")
         results = cursor.fetchall()
 
     # Convertir les résultats en une liste d'objets Test a refacto par la suite
     items = []
     for row in results:
         data_dict = {
-            "id": row[0],
-            "review" : row[1],
-            "rating" : row[2],
+            "input": row[0],
+            "prediction" : row[1],
+            "probability" : row[2],
         }
 
-        data_user = bddtest(**data_dict)
+        data_user = bddinputs(**data_dict)
         items.append(data_user)
 
     # Retourner les résultats de l'API
