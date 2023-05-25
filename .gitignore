@@ -1,3 +1,6 @@
 data/
 .python-version
 .env
+
+.space
+Spacefile

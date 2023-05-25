@@ -9,8 +9,13 @@ model = SentimentModel()
 
 # 3. Expose the prediction functionality, make a prediction from the passed
 #    JSON data and return the predicted flower species with the confidence
-@app.post('/test_predict')
 
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+
+@app.post('/test_predict')
 def predict_sentiment(review: ReviewSentiment):
     data = review.dict()
     prediction, probability = model.predict_sentiment(
