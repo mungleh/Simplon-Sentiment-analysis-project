@@ -3,9 +3,9 @@ from pydantic import BaseModel
 
 #struture table inputs
 class bddinputs(BaseModel):
-    title: Optional[str]
-    feature : Optional[str]
-    prediction : Optional[str]
+    input: Optional[str]
+    prediction : Optional[int]
+    probability : Optional[float]
 
 #structure table test
 class bddtest(BaseModel):
