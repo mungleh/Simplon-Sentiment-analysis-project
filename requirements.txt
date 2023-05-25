@@ -12,5 +12,3 @@ mlflow
 gcsfs
 termcolor
 uvicorn
-fastapi
-pydantic
