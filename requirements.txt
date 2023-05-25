@@ -12,3 +12,6 @@ mlflow
 gcsfs
 termcolor
 uvicorn
+dotenv
+pymysql
+urllib
