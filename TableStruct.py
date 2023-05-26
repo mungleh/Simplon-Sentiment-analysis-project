@@ -6,6 +6,7 @@ class bddinputs(BaseModel):
     input: Optional[str]
     prediction : Optional[int]
     probability : Optional[float]
+    istrue : Optional[int]
 
 #structure table test
 class bddtest(BaseModel):

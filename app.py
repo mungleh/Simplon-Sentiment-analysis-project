@@ -51,6 +51,7 @@ async def get_items() -> List[bddinputs]:
             "input": row[0],
             "prediction" : row[1],
             "probability" : row[2],
+            "istrue" : row[3],
         }
 
         data_user = bddinputs(**data_dict)
@@ -88,9 +89,9 @@ def predict_sentiment(review: ReviewSentiment):
 async def create_item(item: bddinputs):
     # Effectuer des opérations sur la base de données
     with conn.cursor() as cursor:
-        query = "INSERT INTO inputs (input, prediction, probability) " \
+        query = "INSERT INTO inputs (input, prediction, probability, istrue) " \
                  "VALUES (%s, %s, %s)"
-        values = (item.input,item.prediction, item.probability)
+        values = (item.input,item.prediction, item.probability, item.istrue)
         cursor.execute(query, values)
         conn.commit()
 
