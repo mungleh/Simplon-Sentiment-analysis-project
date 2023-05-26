@@ -1,7 +1,6 @@
 # 1. Library imports
 import uvicorn
 from fastapi import FastAPI
-from dotenv import load_dotenv
 import pymysql
 from TableStruct import bddinputs
 from typing import List
@@ -15,32 +14,33 @@ app = FastAPI(title= "Sentiment Model API")
 model = SentimentModel()
 # model = IrisModel()
 
-# Charger les variables d'environnement à partir du fichier .env
-load_dotenv()
+#conneries
+def connect():
+    # Récupérer l'URL de la base de données à partir des variables d'environnement
+    database_url = os.getenv("DATABASE_URL")
 
-# Récupérer l'URL de la base de données à partir des variables d'environnement
-database_url = os.getenv("DATABASE_URL")
+    # Extraire les composants de l'URL de la base de données
+    url_components = urlparse(database_url)
+    db_host = url_components.hostname
+    db_user = url_components.username
+    db_password = url_components.password
+    db_name = url_components.path.strip('/')
 
-# Extraire les composants de l'URL de la base de données
-url_components = urlparse(database_url)
-db_host = url_components.hostname
-db_user = url_components.username
-db_password = url_components.password
-db_name = url_components.path.strip("/")
-
-# Configurer la connexion à la base de données MySQL
-conn = pymysql.connect(
-    host=db_host,
-    user=db_user,
-    password=db_password,
-    database=db_name
-)
+    # Configurer la connexion à la base de données MySQL
+    conn = pymysql.connect(
+        host=db_host,
+        user=db_user,
+        password=db_password,
+        database=db_name
+    )
+    return conn
 
 #-------------------------------------------------API BDD GET--------------------------------------------
 #affichage pr test
 @app.get("/")
 async def get_items() -> List[bddinputs]:
     # Effectuer des opérations sur la base de données
+    conn = connect()
     with conn.cursor() as cursor:
         cursor.execute("SELECT * FROM inputs")
         results = cursor.fetchall()
@@ -61,9 +61,11 @@ async def get_items() -> List[bddinputs]:
     # Retourner les résultats de l'API
     return items
 
+#
 @app.get("/data")
 async def get_items(col, filter) -> List[bddinputs]:
     # Effectuer des opérations sur la base de données
+    conn = connect()
     with conn.cursor() as cursor:
         cursor.execute(f"SELECT * FROM inputs WHERE {col} = {filter}")
         results = cursor.fetchall()
@@ -112,10 +114,11 @@ def predict_sentiment(review: ReviewSentiment):
 @app.post("/add")
 async def create_item(item: bddinputs):
     # Effectuer des opérations sur la base de données
+    conn = connect()
     with conn.cursor() as cursor:
         query = "INSERT INTO inputs (input, prediction, probability, istrue) " \
                  "VALUES (%s, %s, %s, %s)"
-        values = (item.input,item.prediction, item.probability, item.istrue)
+        values = (item.input, item.prediction, item.probability, item.istrue)
         cursor.execute(query, values)
         conn.commit()
 
@@ -124,6 +127,7 @@ async def create_item(item: bddinputs):
 @app.post("/del")
 async def delete_item():
     # Effectuer des opérations sur la base de données
+    conn = connect()
     with conn.cursor() as cursor:
         query = "DELETE FROM inputs"
         cursor.execute(query)
