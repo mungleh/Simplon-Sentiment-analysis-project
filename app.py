@@ -3,7 +3,7 @@ import uvicorn
 from fastapi import FastAPI
 from dotenv import load_dotenv
 import pymysql
-from TableStruct import bddinputs,  bddtest
+from TableStruct import bddinputs
 from typing import List
 from urllib.parse import urlparse
 import os
@@ -36,6 +36,7 @@ conn = pymysql.connect(
     database=db_name
 )
 
+#-------------------------------------------------API BDD GET--------------------------------------------
 #affichage pr test
 @app.get("/")
 async def get_items() -> List[bddinputs]:
@@ -60,7 +61,30 @@ async def get_items() -> List[bddinputs]:
     # Retourner les résultats de l'API
     return items
 
-#-----------------------------------------------------------------------API app--------------------------------------------------------------
+@app.get("/data")
+async def get_items(col, filter) -> List[bddinputs]:
+    # Effectuer des opérations sur la base de données
+    with conn.cursor() as cursor:
+        cursor.execute(f"SELECT * FROM inputs WHERE {col} = {filter}")
+        results = cursor.fetchall()
+
+    # Convertir les résultats en une liste d'objets Test a refacto par la suite
+    items = []
+    for row in results:
+        data_dict = {
+            "input": row[0],
+            "prediction" : row[1],
+            "probability" : row[2],
+            "istrue" : row[3],
+        }
+
+        data_user = bddinputs(**data_dict)
+        items.append(data_user)
+
+    # Retourner les résultats de l'API
+    return items
+
+#------------------------------------------------------API app----------------------------------------
 @app.post('/test_predict')
 
 def predict_sentiment(review: ReviewSentiment):
@@ -84,13 +108,13 @@ def predict_sentiment(review: ReviewSentiment):
         'probability': probability
     }
 
- #------------------------------------------------------------------------API BDD---------------------------------------------------------------------------
+ #----------------------------------------------API BDD POST-----------------------------------------------------
 @app.post("/add")
 async def create_item(item: bddinputs):
     # Effectuer des opérations sur la base de données
     with conn.cursor() as cursor:
         query = "INSERT INTO inputs (input, prediction, probability, istrue) " \
-                 "VALUES (%s, %s, %s)"
+                 "VALUES (%s, %s, %s, %s)"
         values = (item.input,item.prediction, item.probability, item.istrue)
         cursor.execute(query, values)
         conn.commit()
