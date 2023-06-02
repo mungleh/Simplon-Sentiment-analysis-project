@@ -13,7 +13,7 @@ class SentimentModel:
     #    if exists. If not, calls the _train_model method and
     #    saves the model
     def __init__(self):
-        self.model_fname_ = 'baseline.pkl'
+        self.model_fname_ = 'random_forest_sentiment_analysis.pkl'
         self.model = joblib.load(self.model_fname_)
 
     # 5. Make a prediction based on the user-entered data
